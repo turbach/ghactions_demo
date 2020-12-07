@@ -81,13 +81,13 @@ jobs:
       - name: build sphinx docs
         run: echo building sphinx docs $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
-      - name: deploy sphinx docs
-        if: ${{ env.PY_VER == '3.8' }}
-        run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
-
       - name: deploy test.pypi
         if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL }}
         run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: deploy sphinx docs
+        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
+        run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy pypi
         if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
