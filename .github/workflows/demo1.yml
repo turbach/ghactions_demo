@@ -10,7 +10,7 @@ env:
   PACKAGE_NAME: ghactions_demo
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
-  CONDA_BLD_DIR: /tmp/bld_dir
+  CONDA_BLD_PATH: /tmp/bld_dir
   CONDA_LABEL: "cid-test"
 
 on:
