@@ -14,15 +14,15 @@ env:
 
 on:
   push:
-    # don't push release tags
-    # tags: '!v[0-9]+.[0-9].[0-9]+'
+    # don't run on tagged release pushes
+    tags-ignore:
+      - v[0-9]+.[0-9].[0-9]+
 
   pull_request:
 
   release:
     types: [published]
     branch: main
-    tags: 'v[0-9]+.[0-9].[0-9]+'
 
 jobs:
   ci:
@@ -33,9 +33,9 @@ jobs:
     env:
       PY_VER: ${{ matrix.pyver }}
 
-    outputs:
-      deploy-type: ${{ steps.conda-build.outputs.deploy-type }}
-      tarball: ${{ steps.conda-build.outputs.tarball }}
+    # outputs:
+    #   deploy-type: ${{ steps.conda-build.outputs.deploy-type }}
+    #   tarball: ${{ steps.conda-build.outputs.tarball }}
 
     steps:
       - uses: actions/checkout@v2
@@ -47,18 +47,18 @@ jobs:
         id: conda-build
         run: |
           echo "building conda pkg $PY_VER"
-          DEPLOY_TYPE="pre-release"
-          TARBALL="${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt"
-          echo "::set-output name=deploy-type::$DEPLOY_TYPE"
-          echo "::set-output name=tarball::$TARBALL"
+          deploy-type="pre-release"
+          tarball="${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt"
+          echo "DEPLOY_TYPE=$deploy-type" >> $GITHUB_ENV
+          echo "TARBALL=$tarball" >> $GITHUB_ENV
+          # echo "::set-output name=deploy-type::$DEPLOY_TYPE"
+          # echo "::set-output name=tarball::$TARBALL"
 
           # echo "I am a $DEPLOY_TYPE $PY_VER conda pkg" > ${{ steps.conda-build.outputs.tarball }}
-          echo "conda-build tarball output:" ${{ steps.conda-build.outputs.tarball }}
+          # echo "conda-build tarball output:" $steps.conda-build.outputs.tarball
 
       - name: pytest
-        env:
-          TARBALL: ${{ steps.conda-build.outputs.tarball }}
-        run: echo "pytesting $PY_VER for $TARBALL"
+        run: echo "pytesting $PY_VER for TARBALL=$TARBALL"
 
       - name: deploy conda pkg
         run: echo "conda upload $PY_VER ${{ steps.conda-build.output.deploy-type }} ${{ steps.conda-build.output.tarball }} "
