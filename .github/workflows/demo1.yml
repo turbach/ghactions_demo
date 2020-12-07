@@ -45,8 +45,8 @@ jobs:
         id: conda-build
         run: |
           echo "building conda pkg $PY_VER"
-          export DEPLOY_TYPE="pre-release"
-          export TARBALL=${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt
+          DEPLOY_TYPE=pre-release
+          TARBALL=${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt
           echo "::set-output name=deploy-type::$DEPLOY_TYPE"
           echo "::set-output name=tarball::$TARBALL"
 
@@ -56,19 +56,19 @@ jobs:
         run: echo "pytesting $PY_VER"
 
       - name: deploy conda pkg
-        run: echo "conda upload with DEPLOY_TYPE=$DEPLOY_TYPE output deploy-type=${{ ci.step.build.output.deploy-type }}"
+        run: echo "conda upload $PY_VER ${{ steps.conda-build.output.deploy-type }} ${{ steps.conda-build.output.tarball }} "
 
       - name: build sphinx docs
-        run: echo "building sphinx docs on $PY_VER"
+        run: echo "building sphinx docs $PY_VER ${{ steps.conda-build.output.deploy-type }}"
 
       - name: deploy sphinx docs
-        run: echo "ghpages upload with DEPLOY_TYPE=$DEPLOY_TYPE output deploy-type=${{ ci.step.build.output.deploy-type }}"
+        run: echo "ghpages upload $PY_VER ${{ steps.conda-build.output.deploy-type }}"
 
-      - name: build python sdist
-        run: echo "building python sdist"
+      - name: build sdist
+        run: echo "building sdist $PY_VER ${{ steps.conda-build.output.deploy-type }}"
 
       - name: deploy test.pypi
-        run: echo "uploading sdist to TEST.pypi.org"
+        run: echo "uploading sdist to TEST.pypi.org $PY_VER ${{ steps.conda-build.output.deploy-type }}"
 
       - name: deploy pypi
-        run: echo "uploading sdist to PYPI.org"
+        run: echo "uploading sdist to PYPI.org $PY_VER ${{ steps.conda-build.output.deploy-type }}"
