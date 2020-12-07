@@ -47,10 +47,10 @@ jobs:
         id: conda-build
         run: |
           echo "building conda pkg $PY_VER"
-          export DEPLOY_TYPE="pre-release"
-          export TARBALL="${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt"
-          echo "::set-output name=deploy-type::$DEPLOY_TYPE"
-          echo "::set-output name=tarball::$TARBALL"
+          #export DEPLOY_TYPE="pre-release"
+          # export TARBALL="${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt"
+          echo "::set-output name=deploy-type::what_the"
+          echo "::set-output name=tarball::heck_is_this"
 
           # echo "I am a $DEPLOY_TYPE $PY_VER conda pkg" > ${{ steps.conda-build.outputs.tarball }}
           echo "conda-build tarball: ${{ steps.conda-build.outputs.tarball }}"
