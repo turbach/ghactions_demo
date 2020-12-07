@@ -1,0 +1,72 @@
+name: demo1
+
+defaults:
+  run:
+    shell:
+      # as login shell for conda envs
+      bash -l {0}
+
+env:
+  PACKAGE_NAME: ghactions_demo
+  SPHINX_DOCS_PATH: $HOME/docs
+  SPHIX_DOCS_HTML: $HOME/docs/build/html
+  CONDA_BLD_DIR: /tmp/bld_dir
+
+on:
+  push:
+    # don't push release tags
+    tags: '!v[0-9]+.[0-9].[0-9]+'
+
+  pull_request:
+
+  release:
+    types: [published]
+    branch: main
+    tags: 'v[0-9]+.[0-9].[0-9]+'
+
+jobs:
+  ci:
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        PY_VER: ["3.6", "3.7", "3.8"]
+
+    outputs:
+      deploy-type: ${{ steps.conda-build.outputs.deploy-type }}
+      tarball: ${{ steps.conda-build.outputs.tarball }}
+
+    steps:
+      - name: install
+        run: echo "installing $PY_VER"
+
+      - name: build conda pkg
+        id: conda-build
+        run: |
+          echo "building conda pkg $PY_VER"
+          export DEPLOY_TYPE="pre-release"
+          export TARBALL=${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt
+          echo "I am a conda pkg" > ${{ ci.steps.conda-build.tarball }}
+
+          echo "::set-output name=deploy-type::$DEPLOY_TYPE"
+          echo "::set-output name=tarball::$TARBALL"
+
+      - name: pytest
+        run: echo "pytesting $PY_VER"
+
+      - name: deploy conda pkg
+        run: echo "conda upload with DEPLOY_TYPE=$DEPLOY_TYPE output deploy-type=${{ ci.step.build.output.deploy-type }}"
+
+      - name: build sphinx docs
+        run: echo "building sphinx docs on $PY_VER"
+
+      - name: deploy sphinx docs
+        run: echo "ghpages upload with DEPLOY_TYPE=$DEPLOY_TYPE output deploy-type=${{ ci.step.build.output.deploy-type }}"
+
+      - name: build python sdist
+        run: echo "building python sdist"
+
+      - name: deploy test.pypi
+        run: echo "uploading sdist to TEST.pypi.org"
+
+      - name: deploy pypi
+        run: echo "uploading sdist to PYPI.org"
