@@ -45,6 +45,11 @@ jobs:
           conda config --set always_yes yes --set changeps1 no
           conda info -a
 
+      - name: create conda env
+        run: |
+          conda create -n pyenv_$PY_VER python=$PY_VER numpy
+          conda activate pyenv_$PY_VER
+
       - name: local action test
         uses: ./.github/actions/conda-build
 
