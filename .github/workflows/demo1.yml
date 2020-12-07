@@ -49,29 +49,29 @@ jobs:
         run: |
           echo "building conda pkg $PY_VER"
           tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-$PY_VER_${GITHUB_SHA:0:8}.tar.bz2
-          if [[ $tarball =~ ^.*([0-9]+\.){3}\.dev[0-9]+$ ]]; then conda_label="pre-release"; fi
-          if [[ $tarball =~ ^.*([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
+          if [[ $tarball =~ .*([0-9]+\.){3}\.dev[0-9]+ ]]; then conda_label="pre-release"; fi
+          if [[ $tarball =~ .*([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
           echo conda build ${conda_label}
           echo "CONDA_LABEL=${conda_label}" >> $GITHUB_ENV
           echo "TARBALL=$tarball" >> $GITHUB_ENV
 
       - name: pytest
-        run: echo pytesting $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy conda pkg
-        run: echo conda upload $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo conda upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: build sphinx docs
-        run: echo building sphinx docs $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo building sphinx docs $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy sphinx docs
-        run: echo ghpages upload $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: build sdist
-        run: echo building sdist $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy test.pypi
-        run: echo uploading sdist to TEST.pypi.org $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy pypi
-        run: echo uploading sdist to PYPI.org $PY_VER $CONDA_LABEL for TARBALL=$TARBALL
+        run: echo uploading sdist to PYPI.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
