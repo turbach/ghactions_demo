@@ -36,14 +36,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: local action test
-        uses: ./.github/actions/conda-build
-
       - name: install
         run: echo "installing $PY_VER"
 
+      - name: local action test
+        uses: ./.github/actions/conda-build
+
       - name: build conda pkg
-        id: conda-build
         run: |
           echo "building conda pkg $PY_VER"
           tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2

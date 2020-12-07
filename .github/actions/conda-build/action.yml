@@ -4,7 +4,7 @@ name: conda-build
 runs:
   using: "composite"
   steps:
-    - name: build conda pkg
+    - name: composite build conda pkg
       shell: bash -l {0}
       run: |
         echo "building conda pkg $PY_VER"
