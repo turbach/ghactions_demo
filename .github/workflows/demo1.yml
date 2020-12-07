@@ -14,9 +14,8 @@ env:
 
 on:
   push:
-    # run on all branches but not tags
-    branches: 
-    tags-ignore: ["*"]
+    branches:   # need explicit branches to use tags-ignore
+    tags-ignore: ["v.[0-9].[0-9].[0-9]"]  # skip 
 
   pull_request:
 
