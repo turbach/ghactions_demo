@@ -16,7 +16,7 @@ on:
   push:
     # don't run on tagged release pushes
     tags-ignore:
-      - 'v[0-9]+.[0-9].[0-9]+'
+      - '*'
 
   pull_request:
 
