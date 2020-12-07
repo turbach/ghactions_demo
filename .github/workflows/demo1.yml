@@ -46,6 +46,7 @@ jobs:
       - name: conda init
         run: |
           conda init bash
+          conda activate
           conda info -a
 
       - name: create conda env
