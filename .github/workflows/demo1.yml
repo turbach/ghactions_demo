@@ -14,11 +14,9 @@ env:
 
 on:
   push:
-    # don't run on tagged release pushes
-    branches:
-      - "**"  # make default explicit
-    tags-ignore:
-      - "**"
+    # run on all branches but not tags
+    branches: ["*"]
+    tags-ignore: ["*"]
 
   pull_request:
 
