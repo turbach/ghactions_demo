@@ -29,7 +29,7 @@ jobs:
     runs-on: [ubuntu-latest]
     strategy:
       matrix:
-        pyver: ["3.6"] # , "3.7", "3.8"]
+        pyver: ["3.6", "3.7", "3.8"]
     env:
       PY_VER: ${{ matrix.pyver }}
 
@@ -82,13 +82,13 @@ jobs:
         run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: build sdist
-        if env.PY_VER == "3.8"
+        if: env.PY_VER == "3.8"
         run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy test.pypi
-        if env.PY_VER == "3.8" && env.CONDA_LABEL == "pre-release"
+        if: env.PY_VER == "3.8" && env.CONDA_LABEL == "pre-release"
         run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy pypi
-        if env.PY_VER == "3.8" && env.CONDA_LABEL == "main"
+        if: env.PY_VER == "3.8" && env.CONDA_LABEL == "main"
         run: echo uploading sdist to PYPI.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
