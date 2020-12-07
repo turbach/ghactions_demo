@@ -11,8 +11,7 @@ env:
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
   CONDA_BLD_PATH: /tmp/bld_dir
-  CONDA_LABEL: "cid-test"
-  TEST_TARBALL" $CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
+  TEST_TARBALL: $CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
 
 on:
   # all pushes except vM.N.P tagged stable release
