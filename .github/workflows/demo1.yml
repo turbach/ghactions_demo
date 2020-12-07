@@ -47,33 +47,28 @@ jobs:
         id: conda-build
         run: |
           echo "building conda pkg $PY_VER"
-          deploy-type="pre-release"
+          deploy_type="pre-release"
           tarball="${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt"
-          echo "DEPLOY_TYPE=$deploy-type" >> $GITHUB_ENV
+          echo "DEPLOY_TYPE=$deploy_type" >> $GITHUB_ENV
           echo "TARBALL=$tarball" >> $GITHUB_ENV
-          # echo "::set-output name=deploy-type::$DEPLOY_TYPE"
-          # echo "::set-output name=tarball::$TARBALL"
-
-          # echo "I am a $DEPLOY_TYPE $PY_VER conda pkg" > ${{ steps.conda-build.outputs.tarball }}
-          # echo "conda-build tarball output:" $steps.conda-build.outputs.tarball
 
       - name: pytest
-        run: echo "pytesting $PY_VER for TARBALL=$TARBALL"
+        run: echo pytesting $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
 
       - name: deploy conda pkg
-        run: echo "conda upload $PY_VER ${{ steps.conda-build.output.deploy-type }} ${{ steps.conda-build.output.tarball }} "
+        run: echo conda upload $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
 
       - name: build sphinx docs
-        run: echo "building sphinx docs $PY_VER ${{ steps.conda-build.output.deploy-type }}"
+        run: echo building sphinx docs $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
 
       - name: deploy sphinx docs
-        run: echo "ghpages upload $PY_VER ${{ steps.conda-build.output.deploy-type }}"
+        run: echo ghpages upload $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
 
       - name: build sdist
-        run: echo "building sdist $PY_VER ${{ steps.conda-build.output.deploy-type }}"
+        run: echo building sdist $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
 
       - name: deploy test.pypi
-        run: echo "uploading sdist to TEST.pypi.org $PY_VER ${{ steps.conda-build.output.deploy-type }}"
+        run: echo uploading sdist to TEST.pypi.org $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
 
       - name: deploy pypi
-        run: echo "uploading sdist to PYPI.org $PY_VER ${{ steps.conda-build.output.deploy-type }}"
+        run: echo uploading sdist to PYPI.org $PY_VER $DEPLOY_TYPE for TARBALL=$TARBALL
