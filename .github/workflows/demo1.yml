@@ -11,7 +11,6 @@ env:
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
   CONDA_BLD_PATH: /tmp/bld_dir
-  TEST_TARBALL: $CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
 
 on:
   # all pushes except vM.N.P tagged stable release
@@ -48,8 +47,7 @@ jobs:
         id: conda-build
         run: |
           echo "building conda pkg $PY_VER"
-          # tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_${GITHUB_SHA:0:8}.tar.bz2
-          tarball=$TEST_TARBALL
+          tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
           if [[ $tarball =~ .*([0-9]+\.){3}dev[0-9]+ ]]; then conda_label="pre-release"; fi
           if [[ $tarball =~ .*([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
           # posix to set conda_label to ci_test if unset
