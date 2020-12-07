@@ -43,10 +43,10 @@ jobs:
           # source $HOME/miniconda/etc/profile.d/conda.sh  #  && conda init bash
           conda config --set always_yes yes --set changeps1 no
           conda init bash
+          hash -r
 
       - name: create conda env
         run: |
-          source ~/.bashrc
           conda create -n pyenv_$PY_VER python=$PY_VER numpy
           conda activate pyenv_$PY_VER
 
