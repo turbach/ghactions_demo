@@ -50,7 +50,8 @@ jobs:
           echo "::set-output name=deploy-type::$DEPLOY_TYPE"
           echo "::set-output name=tarball::$TARBALL"
 
-          echo "I am a $DEPLOY_TYPE $PY_VER conda pkg" > ${{ steps.conda-build.outputs.tarball }}
+          # echo "I am a $DEPLOY_TYPE $PY_VER conda pkg" > ${{ steps.conda-build.outputs.tarball }}
+          echo ${{ steps.conda-build.outputs.tarball }}
 
       - name: pytest
         run: echo "pytesting $PY_VER"
