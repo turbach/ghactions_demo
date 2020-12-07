@@ -1,0 +1,94 @@
+name: demo1
+
+defaults:
+  run:
+    shell:
+      # as login shell for conda envs
+      bash -l {0}
+
+env:
+  PACKAGE_NAME: ghactions_demo
+  SPHINX_DOCS_PATH: $HOME/docs
+  SPHIX_DOCS_HTML: $HOME/docs/build/html
+  CONDA_BLD_PATH: /tmp/bld_dir
+
+on:
+  # all pushes except vM.N.P tagged stable release
+  push:
+    branches: ["*"]
+    tags-ignore: ["v.[0-9].[0-9].[0-9]"]
+
+  pull_request:
+
+  release:
+    types: [published]
+    branch: main
+
+jobs:
+  ci:
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        pyver: ["3.6", "3.7", "3.8"]
+    env:
+      PY_VER: ${{ matrix.pyver }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # - name: install miniconda
+      #   run: |
+      #     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+      #     bash miniconda.sh -b -p $HOME/miniconda
+      #     conda init bash
+
+      #     echo "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi" >> ~/.bash_profile
+      #     # source $HOME/miniconda/etc/profile.d/conda.sh  #  && conda init bash
+      #     conda config --set always_yes yes --set changeps1 no
+
+      # - name: create conda env
+      #   run: |
+      #     conda create -n pyenv_$PY_VER python=$PY_VER numpy
+      #     conda activate $PY_VER numpy
+      #     # this works
+      #     # eval "$(conda shell.bash hook)" && conda activate pyenv_$PY_VER
+
+      - name: fake build conda pkg
+        run: |
+          echo "building conda pkg $PY_VER"
+          tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
+          if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+ ]]; then conda_label="pre-release"; fi
+          if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
+
+          # posix to set conda_label to ci_test if unset
+          echo "CONDA_LABEL=${conda_label:-ci_test]}" >> $GITHUB_ENV
+          echo conda build ${conda_label}
+          echo "TARBALL=$tarball" >> $GITHUB_ENV
+
+      # - name: local action test
+      #   uses: ./.github/actions/conda-build
+
+      - name: pytest
+        run: echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: deploy conda pkg
+        run: echo conda upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: build sphinx docs
+        run: echo building sphinx docs $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: deploy sphinx docs
+        if: ${{ env.PY_VER == '3.8' }}
+        run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: build sdist
+        if: ${{ env.PY_VER == '3.8' }}
+        run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: deploy test.pypi
+        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'pre-release' }}
+        run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
+      - name: deploy pypi
+        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
+        run: echo uploading sdist to PYPI.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
