@@ -4,6 +4,16 @@ name: conda-build
 runs:
   using: "composite"
   steps:
-    - name: this might build a conda package
+    - name: build conda pkg
       shell: bash -l {0}
-      run: echo "this is a test"
+      run: |
+        echo "building conda pkg $PY_VER"
+        tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
+        if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+ ]]; then conda_label="pre-release"; fi
+        if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
+
+        # posix to set conda_label to ci_test if unset
+        echo "CONDA_LABEL=${conda_label:-ci_test]}" >> $GITHUB_ENV
+        echo conda build ${conda_label}
+        echo "TARBALL=$tarball" >> $GITHUB_ENV
+
