@@ -1,5 +1,13 @@
+# composite run steps 
 name: conda-build
 
-jobs:
-  name: conda build package
-  run: echo "this is a test"
+defaults:
+  run:
+    shell:
+      bash -l {0}
+
+runs:
+  using: "composite"
+  steps:
+    - name: this might build a conda package
+      run: echo "this is a test"
