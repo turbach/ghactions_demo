@@ -47,10 +47,10 @@ jobs:
           echo "building conda pkg $PY_VER"
           export DEPLOY_TYPE="pre-release"
           export TARBALL=${CONDA_BLD_DIR}/ghaction_${PY_VER}.txt
-          echo "I am a conda pkg" > ${{ ci.steps.conda-build.tarball }}
-
           echo "::set-output name=deploy-type::$DEPLOY_TYPE"
           echo "::set-output name=tarball::$TARBALL"
+
+          echo "I am a $DEPLOY_TYPE $PY_VER conda pkg" > ${{ steps.conda-build.outputs.tarball }}
 
       - name: pytest
         run: echo "pytesting $PY_VER"
