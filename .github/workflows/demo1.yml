@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: local action test
-        uses: ./github/actions/conda-build
+        uses: ./.github/actions/conda-build
 
       - name: install
         run: echo "installing $PY_VER"
