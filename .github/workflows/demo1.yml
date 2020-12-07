@@ -15,7 +15,7 @@ env:
 on:
   push:
     # run on all branches but not tags
-    branches: ["*"]
+    branches: 
     tags-ignore: ["*"]
 
   pull_request:
