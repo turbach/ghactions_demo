@@ -22,7 +22,7 @@ on:
 
   release:
     types: [published]
-    branch: main
+    branches: [main]
 
 jobs:
   ci:
@@ -71,6 +71,10 @@ jobs:
       - name: pytest
         run: echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
+      - name: build sdist
+        if: ${{ env.PY_VER == '3.8' }}
+        run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+
       - name: deploy conda pkg
         run: echo conda upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
@@ -81,12 +85,8 @@ jobs:
         if: ${{ env.PY_VER == '3.8' }}
         run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
-      - name: build sdist
-        if: ${{ env.PY_VER == '3.8' }}
-        run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
-
       - name: deploy test.pypi
-        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'pre-release' }}
+        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL }}
         run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy pypi
