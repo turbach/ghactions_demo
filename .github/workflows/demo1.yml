@@ -40,15 +40,15 @@ jobs:
         run: |
           wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
           bash miniconda.sh -b -p $HOME/miniconda
+          eval "$(conda shell.bash hook)" && conda activate base
           # source $HOME/miniconda/etc/profile.d/conda.sh  #  && conda init bash
           conda config --set always_yes yes --set changeps1 no
-          conda init bash
-          hash -r
 
       - name: create conda env
         run: |
+          eval "$(conda shell.bash hook)" && conda activate base
           conda create -n pyenv_$PY_VER python=$PY_VER numpy
-          conda activate pyenv_$PY_VER
+          eval "$(conda shell.bash hook)" && conda activate pyenv_$PY_VER
 
       - name: local action test
         uses: ./.github/actions/conda-build
