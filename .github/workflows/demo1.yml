@@ -49,8 +49,8 @@ jobs:
         run: |
           echo "building conda pkg $PY_VER"
           tarball=0.0.0.dev0
-          if [[ $tarball =~ ^([0-9]+\.){3}\.dev[0-9]+$ ]] then; CONDA_LABEL="pre-release"; fi
-          if [[ $tarball =~ ^([0-9]+\.){2}\.[0-9]+ ]] then; CONDA_LABEL="pre-release"; fi
+          if [[ $tarball =~ ^([0-9]+\.){3}\.dev[0-9]+$ ]]; then CONDA_LABEL="pre-release"; fi
+          if [[ $tarball =~ ^([0-9]+\.){2}\.[0-9]+ ]]; then CONDA_LABEL="pre-release"; fi
           echo "CONDA_LABEL=$CONDA_LABEL" >> $GITHUB_ENV
           echo "TARBALL=$tarball" >> $GITHUB_ENV
 
