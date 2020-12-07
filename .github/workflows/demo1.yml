@@ -44,13 +44,9 @@ jobs:
           conda config --set always_yes yes --set changeps1 no
           conda init bash
 
-      - name: conda init
-        run: |
-          conda activate
-          conda info -a
-
       - name: create conda env
         run: |
+          source ~/.bashrc
           conda create -n pyenv_$PY_VER python=$PY_VER numpy
           conda activate pyenv_$PY_VER
 
