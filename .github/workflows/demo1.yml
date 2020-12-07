@@ -15,8 +15,8 @@ env:
 on:
   push:
     # don't run on tagged release pushes
-    tags-ignore:
-      - '*'
+#    tags-ignore:
+#      - '*'
 
   pull_request:
 
