@@ -29,7 +29,9 @@ jobs:
     runs-on: [ubuntu-latest]
     strategy:
       matrix:
-        PY_VER: ["3.6", "3.7", "3.8"]
+        pyver: ["3.6", "3.7", "3.8"]
+    env:
+      PY_VER: ${{ matrix.pyver }}
 
     outputs:
       deploy-type: ${{ steps.conda-build.outputs.deploy-type }}
