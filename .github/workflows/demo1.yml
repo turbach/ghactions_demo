@@ -53,7 +53,7 @@ jobs:
       - name: test conda activate
         run: |
           cat ~/.bash_profile
-          cat ~/.bash_rc
+          cat ~/.bashrc
           conda activate 
 
       # - name: create conda env
