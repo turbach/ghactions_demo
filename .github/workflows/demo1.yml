@@ -13,23 +13,21 @@ env:
   CONDA_BLD_PATH: /tmp/bld_dir
 
 on:
-  # all pushes except vM.N.P tagged stable release
+  # all branchs, exclude tags
   push:
     branches: ["*"]
     tags-ignore: ["*"]
-
-  # release:
-  #   types: 
-  #     - published
-  #   branches: 
-  #     - main
-  #   tags: ["v[0-9].[0-9].[0-9]"]
 
   pull_request:
     types:
       - opened
       - reopened
       - ready_for_review
+
+  # there is no way to filter tags or branches here
+  release:
+    types: 
+      - published
 
 jobs:
   ci:
@@ -63,7 +61,7 @@ jobs:
       - name: fake build conda pkg
         run: |
           echo "building conda pkg $PY_VER"
-          tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
+          tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
           if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+ ]]; then conda_label="pre-release"; fi
           if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
 
@@ -89,7 +87,7 @@ jobs:
         run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy sdist test.pypi
-        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL }}
+        if: ${{ env.PY_VER == '3.8' }}
         run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
       - name: deploy sphinx docs
