@@ -1,0 +1,5 @@
+name: conda-build
+
+jobs:
+  name: conda build package
+  run: echo "this is a test"
