@@ -11,6 +11,10 @@
 # 
 #   - eval "$(conda shell.bash hook)"
 #   - conda activate myenv
+#
+# tagged releases trigger two push and tag events so to prevent double
+# runs of the workflow either exclude tags from on: push or allow
+# tags and drop the release trigger.
 
 name: demo1
 
@@ -28,7 +32,8 @@ env:
   CONDA_BLD_PATH: $HOME/conda_bld_dir
 
 on:
-  # all branchs, exclude tags
+  # any branch allows for testing, exclude tags to prevent double runs
+  # on tagged release
   push:
     branches: ["*"]
     tags-ignore: ["*"]
@@ -60,10 +65,9 @@ jobs:
         run: |
           wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
           bash miniconda.sh -b -p $HOME/miniconda
-          mkdir -p $CONDA_BLD_PATH
-
-          # replacement for conda init bash which targets .bashrc
+          # so conda activate works in non-interactive login shells via bash -l {0}
           conda shell.bash hook >> ~/.bash_profile
+          mkdir -p $CONDA_BLD_PATH && rm miniconda.sh
 
       - name: test conda activate
         run: |
@@ -80,11 +84,14 @@ jobs:
       - name: create conda env
         run: |
           conda create -n pyenv_$PY_VER python=$PY_VER
-          conda activate $PY_VER
+          conda activate pyenv_$PY_VER
 
       - name: pytest
-        run: echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        run: |
+          conda activate pyenv_$PY_VER
+          echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
+      # CONDA_LABEL switches repo uploads for both conda and python packages
       - name: set conda label
         run: |
           # version M.N.P.dev on dev branch uploads to conda pre-release and test.pypi.org
@@ -104,6 +111,8 @@ jobs:
           fi
 
           # conda label defaults to ci_test if not set to pre-release or main
+          # this deploys the conda package only to label ci_test, python package is
+          # not uploaded
           echo "CONDA_LABEL=${conda_label:-ci_test}" >> $GITHUB_ENV
 
       - name: log deploy variables
