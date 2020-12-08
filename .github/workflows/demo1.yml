@@ -75,7 +75,7 @@ on:
 
   schedule:
     # run every two minutes
-    - cron: '28-35/1 * * * *'
+    - cron: '*/2 * * * *'
 
     # run at 1 am 
     # - cron: '0 1 * * *'
