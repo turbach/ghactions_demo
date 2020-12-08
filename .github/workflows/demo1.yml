@@ -16,13 +16,18 @@ on:
   # all pushes except vM.N.P tagged stable release
   push:
     branches: ["*"]
-    tags-ignore: ["v.[0-9].[0-9].[0-9]"]
-
-  pull_request:
+    tags-ignore: ["*"]
 
   release:
     types: [published]
     branches: [main]
+    tags: ["v[0-9].[0-9].[0-9]"]
+
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
 
 jobs:
   ci:
@@ -81,7 +86,7 @@ jobs:
         if: ${{ env.PY_VER == '3.8' }}
         run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
-      - name: deploy test.pypi
+      - name: deploy sdist test.pypi
         if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL }}
         run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
@@ -89,6 +94,6 @@ jobs:
         if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
         run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
 
-      - name: deploy pypi
+      - name: deploy sdist pypi
         if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
         run: echo uploading sdist to PYPI.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
