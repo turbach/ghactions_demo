@@ -1,3 +1,42 @@
+# Notes
+
+# conda env wrangling. To run conda activate env in bash shells, the
+# conda shell.bash hook must be installed. The default user-friendly
+# conda init bash updates .bashrc which is only consulted for
+# interactive shells. The workaround here is to set bash -l {0} to run
+# bash as a login shell so .bash_profile is consulted and update
+# .bash_profile with the hook. After this conda activate works for
+# subsequent job run: steps. Alternatively, the hook can be installed
+# on the fly for each run step like so: 
+# 
+#   - eval "$(conda shell.bash hook)"
+#   - conda activate myenv
+#
+
+# Deployment: The DEPLOY_KEY variable is set according to the conda
+# package version string and github branch name (refs/branch/...) or
+# or tag string (refs/tag/...). The DEPLOY_KEY is used to trigger
+# sphinx docs, conda, and python package uploads to their appropriate
+# repositories on gh-pages for docs, Anacond Cloud label for conda
+# packages, and test.pypi.org (pre-release) or pypi.org (stable
+# release) for python packages.
+
+# Github tagged releases. Github releases generate a release
+# and a push event so prevent double runs of the workflow (wasteful)
+# and the build failing on a PyPI "file exists" error for the second
+# run, either tags from from the push triggers all or vM.N.P tags from
+# the push trigger
+# 
+# Examples:
+#
+#    tags-ignore: ["*"]
+#    tags-ignore: [v[0-9].[0-9].[0-9]
+#
+# or don't run the workflow on releases. Will this allows poorly versioned
+# release to trigger the workflow, the critical PyPI uploads are still
+#  guarded by the DEPLOY_KEY package and tag screening.
+
+
 name: demo1
 
 defaults:
@@ -5,31 +44,42 @@ defaults:
     shell:
       # as login shell for conda envs
       bash -l {0}
+      # bash -i {0}
 
 env:
   PACKAGE_NAME: ghactions_demo
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
-  CONDA_BLD_PATH: /tmp/bld_dir
+  CONDA_BLD_PATH: $HOME/conda_bld_dir
 
 on:
-  # all pushes except vM.N.P tagged stable release
+  # any branch allows for testing, exclude tags to prevent double runs
+  # on tagged release
   push:
     branches: ["*"]
     tags-ignore: ["*"]
-
-  # release:
-  #   types: 
-  #     - published
-  #   branches: 
-  #     - main
-  #   tags: ["v[0-9].[0-9].[0-9]"]
 
   pull_request:
     types:
       - opened
       - reopened
       - ready_for_review
+
+  # currently release does not filter tags or branches like push, so
+  # even incorrectly tagged releases still trigger the
+  # workflow. Uploads to pypi.org remain guarded by the
+  # package version M.N.P tag vM.M.P screening.
+  release:
+    types: 
+      - published
+
+  schedule:
+    # run every two minutes
+    - cron: '*/2 * * * *'
+
+    # run at 1 am 
+    # - cron: '0 1 * * *'
+
 
 jobs:
   ci:
@@ -43,59 +93,85 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: install miniconda
-      #   run: |
-      #     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-      #     bash miniconda.sh -b -p $HOME/miniconda
-      #     conda init bash
+      - name: setup miniconda
+        run: |
+          wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+          bash miniconda.sh -b -p $HOME/miniconda
+          # so conda activate works in non-interactive login shells via bash -l {0}
+          conda shell.bash hook >> ~/.bash_profile
+          mkdir -p $CONDA_BLD_PATH && rm miniconda.sh
 
-      #     echo "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi" >> ~/.bash_profile
-      #     # source $HOME/miniconda/etc/profile.d/conda.sh  #  && conda init bash
-      #     conda config --set always_yes yes --set changeps1 no
+      - name: test conda activate
+        run: |
+          conda activate 
+          conda config --set always_yes yes --set changeps1 no --set bld_path $CONDA_BLD_PATH
+          hash -r 
 
-      # - name: create conda env
-      #   run: |
-      #     conda create -n pyenv_$PY_VER python=$PY_VER numpy
-      #     conda activate $PY_VER numpy
-      #     # this works
-      #     # eval "$(conda shell.bash hook)" && conda activate pyenv_$PY_VER
-
-      - name: fake build conda pkg
+      - name: build conda pkg
         run: |
           echo "building conda pkg $PY_VER"
           tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
-          if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+ ]]; then conda_label="pre-release"; fi
-          if [[ $tarball =~ $PACKAGE_NAME-([0-9]+\.){2}\.[0-9]+ ]]; then conda_label="main"; fi
-
-          # posix to set conda_label to ci_test if unset
-          echo "CONDA_LABEL=${conda_label:-ci_test]}" >> $GITHUB_ENV
-          echo conda build ${conda_label}
           echo "TARBALL=$tarball" >> $GITHUB_ENV
+
+      - name: create conda env
+        run: |
+          conda create -n pyenv_$PY_VER python=$PY_VER
+          conda activate pyenv_$PY_VER
+
+      - name: pytest
+        run: |
+          conda activate pyenv_$PY_VER
+          echo pytesting $PY_VER for TARBALL=$TARBALL
+
+      # Note: DEPLOY_KEY switches both conda and python package upload repo destinations
+      - name: set 
+        run: |
+          # pre-release: package version M.N.P.dev on dev branch will upload 
+          # to conda channel label pre-release and test.pypi.org
+          if [[ \
+            $GITHUB_REF == refs/branch/dev && \
+            $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+-${PY_VER} \
+          ]]; then \
+            conda_label="pre-release"; \
+          fi
+
+          # main: package version M.N.P on tagged release vM.N.P will
+          # upload to conda channel label main and pypi.org
+          if [[ \
+            $GITHUB_REF =~ refs/tag/v[0-9]+\.[0-9]+\.[0-9] && \
+            $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){2}[0-9]+-${PY_VER} \
+          ]]; then \
+            conda_label="main"; \
+          fi
+
+          # ci_test: all else defaults to upload upload conda package to conda
+          # channel cid_test and no python package upload
+          echo "DEPLOY_KEY=${conda_label:-cid_test}" >> $GITHUB_ENV
+
+      - name: log deploy variables
+        run: echo $GITHUB_REF PY_VER=$PY_VER DEPLOY_KEY=$DEPLOY_KEY TARBALL=$TARBALL
 
       # - name: local action test
       #   uses: ./.github/actions/conda-build
 
-      - name: pytest
-        run: echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
-
       - name: deploy conda pkg
-        run: echo conda upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        run: echo conda upload $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: build sphinx docs
-        run: echo building sphinx docs $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        run: echo building sphinx docs $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: build sdist
         if: ${{ env.PY_VER == '3.8' }}
-        run: echo building sdist $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        run: echo building sdist $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: deploy sdist test.pypi
-        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL }}
-        run: echo uploading sdist to TEST.pypi.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        if: ${{ env.PY_VER == '3.8' }}
+        run: echo uploading sdist to TEST.pypi.org $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: deploy sphinx docs
-        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
-        run: echo ghpages upload $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        if: ${{ env.PY_VER == '3.8' && env.DEPLOY_KEY == 'main' }}
+        run: echo ghpages upload $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: deploy sdist pypi
-        if: ${{ env.PY_VER == '3.8' && env.CONDA_LABEL == 'main' }}
-        run: echo uploading sdist to PYPI.org $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
+        if: ${{ env.PY_VER == '3.8' && env.DEPLOY_KEY == 'main' }}
+        run: echo uploading sdist to PYPI.org $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
