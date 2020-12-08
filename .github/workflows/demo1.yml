@@ -4,8 +4,8 @@ defaults:
   run:
     shell:
       # as login shell for conda envs
-      # bash -l {0}
-      bash -i {0}
+      bash -l {0}
+      # bash -i {0}
 
 env:
   PACKAGE_NAME: ghactions_demo
@@ -45,8 +45,9 @@ jobs:
       - name: install miniconda
         run: |
           wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-          bash miniconda.sh -b -p $HOME/miniconda && conda init bash
-          echo "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi" >> ~/.bash_profile
+          bash miniconda.sh -b -p $HOME/miniconda
+          conda shell.bash hook >> ~/.bash_profile   # like conda init except 
+          # echo "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi" >> ~/.bash_profile
           hash -r 
       #     # source $HOME/miniconda/etc/profile.d/conda.sh  #  && conda init bash
       #     conda config --set always_yes yes --set changeps1 no
@@ -54,7 +55,6 @@ jobs:
       - name: test conda activate
         run: |
           cat ~/.bash_profile
-          cat ~/.bashrc
           conda activate 
 
       # - name: create conda env
