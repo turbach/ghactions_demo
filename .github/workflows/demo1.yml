@@ -71,8 +71,8 @@ jobs:
             $GITHUB_REF == refs/branch/dev && \
             $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+-${PY_VER} \
           ]]; then \
-            conda_label="pre-release"
-          fi
+            conda_label="pre-release" \
+          fi \
 
           # version M.N.P on tagged release vM.N.P uploads to label main and pypi.org
           if [[ \
@@ -80,7 +80,7 @@ jobs:
             $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){2}[0-9]+-${PY_VER} \
           ]]; then \
             conda_label="main" \
-          fi
+          fi 
 
           # conda label defaults to ci_test if not set to pre-release or main
           echo "CONDA_LABEL=${conda_label:-ci_test}" >> $GITHUB_ENV
