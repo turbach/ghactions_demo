@@ -4,7 +4,8 @@ defaults:
   run:
     shell:
       # as login shell for conda envs
-      bash -l {0}
+      # bash -l {0}
+      bash {0}
 
 env:
   PACKAGE_NAME: ghactions_demo
