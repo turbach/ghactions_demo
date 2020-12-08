@@ -67,8 +67,10 @@ jobs:
 
           # conda label defaults to ci_test if not set to pre-release or main
           echo "CONDA_LABEL=${conda_label:-ci_test}" >> $GITHUB_ENV
-          echo conda build ${conda_label}
           echo "TARBALL=$tarball" >> $GITHUB_ENV
+
+      - name: show deploy variables
+        run: echo $GITHUB_REF PY_VER=$PY_VER CONDA_LABEL=$CONDA_LABEL TARBALL=$TARBALL
 
       # - name: local action test
       #   uses: ./.github/actions/conda-build
