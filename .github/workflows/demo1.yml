@@ -1,3 +1,17 @@
+# Notes
+# 
+# conda wrangling. To run shells with conda activate yenv, the conda
+# shell.bash hook must be installed. The user-friendly conda init bash
+# updates .bashrc which is only consulted for interactive shells. The
+# workaround here is to update .bash_profile with the hook and set
+# bash -l {0} to run bash as a login shell so .bash_profile is
+# consulted.  After this conda activate works for subsequent job run:
+# steps. Alternatively, the hook can be installed on the fly in each
+# run: step with
+# 
+#   - eval "$(conda shell.bash hook)"
+#   - conda activate myenv
+
 name: demo1
 
 defaults:
@@ -11,7 +25,7 @@ env:
   PACKAGE_NAME: ghactions_demo
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
-  CONDA_BLD_PATH: /tmp/bld_dir
+  CONDA_BLD_PATH: $HOME/conda_bld_dir
 
 on:
   # all branchs, exclude tags
@@ -42,33 +56,31 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: install miniconda
+      - name: setup miniconda
         run: |
           wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
           bash miniconda.sh -b -p $HOME/miniconda
-          conda shell.bash hook >> ~/.bash_profile   # like conda init except 
-          # echo "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi" >> ~/.bash_profile
-          hash -r 
-      #     # source $HOME/miniconda/etc/profile.d/conda.sh  #  && conda init bash
-      #     conda config --set always_yes yes --set changeps1 no
+          mkdir -p $CONDA_BLD_PATH
+
+          # replacement for conda init bash which targets .bashrc
+          conda shell.bash hook >> ~/.bash_profile
 
       - name: test conda activate
         run: |
-          cat ~/.bash_profile
           conda activate 
-
-      # - name: create conda env
-      #   run: |
-      #     conda create -n pyenv_$PY_VER python=$PY_VER numpy
-      #     conda activate $PY_VER numpy
-      #     # this works
-      #     # eval "$(conda shell.bash hook)" && conda activate pyenv_$PY_VER
+          conda config --set always_yes yes --set changeps1 no --set bld_path $CONDA_BLD_PATH
+          hash -r 
 
       - name: build conda pkg
         run: |
           echo "building conda pkg $PY_VER"
           tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
           echo "TARBALL=$tarball" >> $GITHUB_ENV
+
+      - name: create conda env
+        run: |
+          conda create -n pyenv_$PY_VER python=$PY_VER
+          conda activate $PY_VER
 
       - name: pytest
         run: echo pytesting $PY_VER label=$CONDA_LABEL for TARBALL=$TARBALL
