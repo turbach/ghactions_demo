@@ -9,8 +9,12 @@ jobs:
     steps:
       - name: dump event
         run: |
-          git clone ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/${GITHUB_SHA} .
-          cd $PKG_NAME
+          mkdir -p ${GITHUB_REPOSITORY}
+          cd ${GITHUB_REPOSITORY}
+          git init
+          git add remote origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+          git fetch origin ${GITHUB_SHA}
+          git reset --hard FETCH_HEAD
           ls -R
 
 
