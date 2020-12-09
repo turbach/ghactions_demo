@@ -6,6 +6,6 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: dump event
-      - run: |
+        run: |
           echo ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/${GITHUB_SHA}
 
