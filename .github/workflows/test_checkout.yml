@@ -11,5 +11,6 @@ jobs:
         run: |
           git clone ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/${GITHUB_SHA} .
           cd $PKG_NAME
+          ls -R
 
 
