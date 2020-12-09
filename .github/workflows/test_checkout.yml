@@ -1,7 +1,11 @@
 name: test_checkout
 env:
   PKG_NAME: ghactions_demo
-on: push
+on: 
+  push:
+  pull_request:
+  release:
+    types: [published]
 
 jobs:
   checkout:
