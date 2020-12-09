@@ -1,4 +1,6 @@
 name: test_checkout
+env:
+  PKG_NAME: ghactions_demo
 on: push
 
 jobs:
@@ -7,5 +9,7 @@ jobs:
     steps:
       - name: dump event
         run: |
-          echo ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/${GITHUB_SHA}
+          git clone ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/${GITHUB_SHA} .
+          cd $PKG_NAME
+
 
