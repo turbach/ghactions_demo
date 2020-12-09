@@ -26,7 +26,10 @@ jobs:
           git config -l
           echo "stub file" >> stub.txt
           git add -A
+          git status
           git commit -a -m 'test commit'
+          printenv | sort
+
 
       - name: checkout 
         run: |
