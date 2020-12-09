@@ -13,6 +13,7 @@ jobs:
           cd ${GITHUB_REPOSITORY}
           git init
           git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+          git checkout -b ${GITHUB_REF}
           git fetch origin ${GITHUB_SHA}
           git reset --hard FETCH_HEAD
           git branch
