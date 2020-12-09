@@ -10,6 +10,14 @@ jobs:
       - name: dump event payload
         run: cat $GITHUB_EVENT_PATH
 
+      - name: git config setup
+        run: |
+          git config -l
+          git config --local user.email ${{ github.event.head_commit.author.email }}
+          git config --local user.name ${{ github.event.head_commit.author.name }}
+          git config -l
+          
+
       - name: dump event
         run: |
           mkdir -p ${GITHUB_REPOSITORY}
