@@ -3,6 +3,7 @@ on: push
 
 jobs:
   checkout:
+    runs-on: [ubuntu-latest]
     steps:
       - name: dump event
       - run: |
