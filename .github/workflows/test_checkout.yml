@@ -12,10 +12,14 @@ jobs:
 
       - name: git config setup
         run: |
+          mkdir -p tmp/docs
+          cd tmp/docs
+          git init
           git config -l
           git config --local user.email ${{ github.event.head_commit.author.email }}
           git config --local user.name ${{ github.event.head_commit.author.name }}
           git config -l
+
           
 
       - name: dump event
