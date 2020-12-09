@@ -1,0 +1,41 @@
+name: test_checkout
+env:
+  PKG_NAME: ghactions_demo
+on: 
+  push:
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  checkout:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: dump event payload
+        run: cat $GITHUB_EVENT_PATH
+
+      - name: git config setup
+        run: |
+          mkdir -p tmp/docs
+          cd tmp/docs
+          git init
+          git config -l
+          git config --local user.email "${{ github.event.head_commit.author.email }}"
+          git config --local user.name "${{ github.event.head_commit.author.name }}"
+          # git config --local user.name $GITHUB_ACTOR
+          git config -l
+
+      - name: dump event
+        run: |
+          mkdir -p ${GITHUB_REPOSITORY}
+          cd ${GITHUB_REPOSITORY}
+          git init
+          git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+          git checkout -b ${GITHUB_REF}
+          git fetch origin ${GITHUB_SHA}
+          git reset --hard FETCH_HEAD
+          git branch
+          git status
+          ls -R
+
+
