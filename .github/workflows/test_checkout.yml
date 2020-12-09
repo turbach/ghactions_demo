@@ -25,7 +25,7 @@ jobs:
           # git config --local user.name $GITHUB_ACTOR
           git config -l
           echo "stub file" >> stub.txt
-          git -add A
+          git add -A
           git commit -a -m 'test commit'
 
       - name: checkout 
