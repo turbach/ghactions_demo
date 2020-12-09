@@ -1,15 +1,9 @@
 name: test_checkout
-
 on: push
 
 jobs:
   checkout:
-    on: push
     steps:
       - name dump event
       - run: |
           echo ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/${GITHUB_SHA}
-
-
-          
-  
