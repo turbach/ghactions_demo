@@ -23,9 +23,6 @@ jobs:
         run: cat $GITHUB_EVENT_PATH
 
       - name: init commit push test 
-        env:
-          GH_ACTION_PUSH: ${{ secrets.GH_ACTION_PUSH }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # echo "actions git config global"
           # git config -l
@@ -48,7 +45,9 @@ jobs:
           # this works w/ personal token and secret 
           # git remote add origin "https://turbach:${GH_ACTION_PUSH}@github.com/turbach/ghactions_demo"
           # git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
-          git remote add origin "https://turbach:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
+          # git remote add origin "https://turbach:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
+
+          git remote add origin "https://${user_name}:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
           git push -u origin test_gh-pages --force
 
   
