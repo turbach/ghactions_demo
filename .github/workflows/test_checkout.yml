@@ -46,8 +46,7 @@ jobs:
           # git remote add origin "https://turbach:${GH_ACTION_PUSH}@github.com/turbach/ghactions_demo"
           # git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
           # git remote add origin "https://turbach:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
-
-          git remote add origin "https://${user_name}:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
+          git remote add origin "https://${user_name}:${{ secrets.github_token }}@github.com/${GITHUB_REPOSITORY}"
           git push -u origin test_gh-pages --force
 
   
