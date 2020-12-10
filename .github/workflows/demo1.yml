@@ -51,7 +51,7 @@ env:
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
   CONDA_BLD_PATH: $HOME/conda_bld_dir
-  DEPLOY_PY_VER: ${{ '3.8' }}
+  DEPLOY_PY_VER: 3.8
 
 on:
   # any branch allows for testing, exclude tags to prevent double runs
