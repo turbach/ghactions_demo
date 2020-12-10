@@ -11,6 +11,10 @@ jobs:
   checkout:
     runs-on: [ubuntu-latest]
     steps:
+
+      - name: checkout
+        uses: actions/checkout@v2
+
       - name: dump event payload
         run: cat $GITHUB_EVENT_PATH
 
