@@ -96,8 +96,8 @@ jobs:
       - name: env dump
         run: echo ${{ env }}
 
-      - name: single quote scalar trigger test 
-        if: env.deploy_py_ver == '3.8'
+      - name: single quote scalar trigger test
+        if: ${{ env.deploy_py_ver == '3.8' }}
         run: echo "triggered on scalar single quote 3.8"
 
       - name: job.env var trigger test 
@@ -108,65 +108,65 @@ jobs:
         if: ${{ env.deploy_py_ver == matrix.py_ver }}
         run: echo "triggered on env.deploy_py_ver == matrix.py_ver"
 
-      - name: setup miniconda
-        run: |
-          wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-          bash miniconda.sh -b -p $HOME/miniconda
-          # so conda activate works in non-interactive login shells via bash -l {0}
-          conda shell.bash hook >> ~/.bash_profile
-          mkdir -p $CONDA_BLD_PATH && rm miniconda.sh
+      # - name: setup miniconda
+      #   run: |
+      #     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+      #     bash miniconda.sh -b -p $HOME/miniconda
+      #     # so conda activate works in non-interactive login shells via bash -l {0}
+      #     conda shell.bash hook >> ~/.bash_profile
+      #     mkdir -p $CONDA_BLD_PATH && rm miniconda.sh
 
-      - name: test conda activate
-        run: |
-          conda activate 
-          conda config --set always_yes yes --set changeps1 no --set bld_path $CONDA_BLD_PATH
-          hash -r 
+      # - name: test conda activate
+      #   run: |
+      #     conda activate 
+      #     conda config --set always_yes yes --set changeps1 no --set bld_path $CONDA_BLD_PATH
+      #     hash -r 
 
-      - name: build conda pkg
-        run: |
-          echo "building conda pkg $PY_VER"
-          tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
-          echo "TARBALL=$tarball" >> $GITHUB_ENV
+      # - name: build conda pkg
+      #   run: |
+      #     echo "building conda pkg $PY_VER"
+      #     tarball=$CONDA_BLD_PATH/$PACKAGE_NAME-0.0.0.dev0-${PY_VER}_g${GITHUB_SHA:0:8}.tar.bz2
+      #     echo "TARBALL=$tarball" >> $GITHUB_ENV
 
-      - name: create conda env
-        run: |
-          conda create -n pyenv_$PY_VER python=$PY_VER
-          conda activate pyenv_$PY_VER
+      # - name: create conda env
+      #   run: |
+      #     conda create -n pyenv_$PY_VER python=$PY_VER
+      #     conda activate pyenv_$PY_VER
 
-      - name: pytest
-        run: |
-          conda activate pyenv_$PY_VER
-          echo pytesting $PY_VER for TARBALL=$TARBALL
+      # - name: pytest
+      #   run: |
+      #     conda activate pyenv_$PY_VER
+      #     echo pytesting $PY_VER for TARBALL=$TARBALL
 
-      # Note: DEPLOY_KEY switches both conda and python package upload repo destinations
-      - name: set 
-        run: |
-          # pre-release: package version M.N.P.dev on dev branch will upload 
-          # to conda channel label pre-release and test.pypi.org
-          if [[ \
-            $GITHUB_REF == refs/branch/dev && \
-            $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+-${PY_VER} \
-          ]]; then \
-            conda_label="pre-release"; \
-          fi
+      # # Note: DEPLOY_KEY switches both conda and python package upload repo destinations
+      # - name: set 
+      #   run: |
+      #     # pre-release: package version M.N.P.dev on dev branch will upload 
+      #     # to conda channel label pre-release and test.pypi.org
+      #     if [[ \
+      #       $GITHUB_REF == refs/branch/dev && \
+      #       $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){3}dev[0-9]+-${PY_VER} \
+      #     ]]; then \
+      #       conda_label="pre-release"; \
+      #     fi
 
-          # main: package version M.N.P on tagged release vM.N.P will
-          # upload to conda channel label main and pypi.org
-          if [[ \
-            $GITHUB_REF =~ refs/tag/v[0-9]+\.[0-9]+\.[0-9] && \
-            $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){2}[0-9]+-${PY_VER} \
-          ]]; then \
-            conda_label="main"; \
-          fi
+      #     # main: package version M.N.P on tagged release vM.N.P will
+      #     # upload to conda channel label main and pypi.org
+      #     if [[ \
+      #       $GITHUB_REF =~ refs/tag/v[0-9]+\.[0-9]+\.[0-9] && \
+      #       $TARBALL =~ $PACKAGE_NAME-([0-9]+\.){2}[0-9]+-${PY_VER} \
+      #     ]]; then \
+      #       conda_label="main"; \
+      #     fi
 
-          # ci_test: all else defaults to upload upload conda package to conda
-          # channel cid_test and no python package upload
-          echo "DEPLOY_KEY=${conda_label:-cid_test}" >> $GITHUB_ENV
+      #     # ci_test: all else defaults to upload upload conda package to conda
+      #     # channel cid_test and no python package upload
+      #     echo "DEPLOY_KEY=${conda_label:-cid_test}" >> $GITHUB_ENV
 
-          echo "DEPLOY_KEY=${conda_label:main}" >> $GITHUB_ENV
+      #     echo "DEPLOY_KEY=${conda_label:main}" >> $GITHUB_ENV
 
-      - name: log deploy variables
-        run: echo $GITHUB_REF PY_VER=$PY_VER DEPLOY_KEY=$DEPLOY_KEY TARBALL=$TARBALL
+      # - name: log deploy variables
+      #   run: echo $GITHUB_REF PY_VER=$PY_VER DEPLOY_KEY=$DEPLOY_KEY TARBALL=$TARBALL
 
       # - name: local action test
       #   uses: ./.github/actions/conda-build
