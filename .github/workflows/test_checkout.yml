@@ -45,9 +45,10 @@ jobs:
           git add -A
           git ls-files
           git commit -a -m "spudtr CID workflow docs update"
-          # this works w/ personal token
+          # this works w/ personal token and secret 
           # git remote add origin "https://turbach:${GH_ACTION_PUSH}@github.com/turbach/ghactions_demo"
-          git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
+          # git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
+          git remote add origin "https://turbach:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
           git push -u origin test_gh-pages --force
 
   
