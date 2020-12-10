@@ -25,6 +25,7 @@ jobs:
       - name: init commit push test 
         env:
           GH_ACTION_PUSH: ${{ secrets.GH_ACTION_PUSH }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # echo "actions git config global"
           # git config -l
@@ -46,7 +47,7 @@ jobs:
           git commit -a -m "spudtr CID workflow docs update"
           # this works w/ personal token
           # git remote add origin "https://turbach:${GH_ACTION_PUSH}@github.com/turbach/ghactions_demo"
-          git remote add origin "https://turbach:${GITHUB_TOKEN}@github.com/turbach/ghactions_demo"
+          git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
           git push -u origin test_gh-pages --force
 
   
