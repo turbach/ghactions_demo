@@ -102,7 +102,7 @@ jobs:
 
       - name: job.env var trigger test 
         if: ${{ env.deploy_py_ver == env.py_ver }}
-        run: echo "triggered on env.deploy_py_ver == matrix.py_ver"
+        run: echo "triggered on env.deploy_py_ver == env.py_ver"
 
       - name: matrix env var trigger test 
         if: ${{ env.deploy_py_ver == matrix.py_ver }}
