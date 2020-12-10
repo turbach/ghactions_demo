@@ -4,8 +4,8 @@ env:
 on: 
   push:
   pull_request:
-  release:
-    types: [published]
+  # release:
+  #   types: [published]
 
 jobs:
   checkout:
@@ -34,9 +34,9 @@ jobs:
 
           git init
           # git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
-          user_name=docs_bot_${GITHUB_EVENT_NAME}
-          git config --global user.email "${user_name}@inthe.cloud.org"
-          git config --global user.name "$user_name"
+          user_name="docs_${GITHUB_EVENT_NAME}_bot"
+          git config user.email "${user_name}@the.cloud.org"
+          git config user.name "$user_name"
           git config -l
           git checkout --orphan test_gh-pages
           git add -A
@@ -46,6 +46,7 @@ jobs:
           # git remote add origin "https://turbach:${GH_ACTION_PUSH}@github.com/turbach/ghactions_demo"
           # git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
           # git remote add origin "https://turbach:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
+          # GITHUB_TOKEN is not automatically accessible in run shells
           git remote add origin "https://${user_name}:${{ secrets.github_token }}@github.com/${GITHUB_REPOSITORY}"
           git push -u origin test_gh-pages --force
 
