@@ -97,7 +97,8 @@ jobs:
         run: echo ${{ env }}
 
       - name: single quote scalar trigger test
-        if: ${{ env.deploy_py_ver == '3.8' }}
+        # if: ${{ env.deploy_py_ver == '3.8' }}
+        if: ${{ env.py_ver == '3.8' }}
         run: echo "triggered on scalar single quote 3.8"
 
       - name: job.env var trigger test 
@@ -186,9 +187,9 @@ jobs:
         run: echo uploading sdist to TEST.pypi.org $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: deploy sphinx docs
-        if: ${{ env.PY_VER == '3.8' && env.DEPLOY_KEY == 'main' }}
+        if: ${{ env.PY_VER == '3.8' && (env.DEPLOY_KEY == 'main') }}
         run: echo ghpages upload $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
 
       - name: deploy sdist pypi
-        if: ${{ env.PY_VER == '3.8' && env.DEPLOY_KEY == 'main' }}
+        if: ${{ env.PY_VER == '3.8' && (env.DEPLOY_KEY == 'main') }}
         run: echo uploading sdist to PYPI.org $PY_VER label=$DEPLOY_KEY for TARBALL=$TARBALL
