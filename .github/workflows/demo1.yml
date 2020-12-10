@@ -96,36 +96,37 @@ jobs:
       - name: env dump
         run: echo ${{ env }}
 
-      - name: env.DEPLOY_.PY_VER == '3.8' }}
-        if: ${{ env.DEPLOY_.PY_VER == '3.8' }}
-        run: echo "triggered on scalar single quote 3.8"
+      - name: env.DEPLOY_PY_VER == '3.8'
+        if: ${{ env.DEPLOY_PY_VER == '3.8' }}
+        run: echo "triggered"
 
 
       - name: env.deploy_py_ver == env.py_ver
         if: ${{ env.deploy_py_ver == env.py_ver }}
-        run: echo "triggered on env.deploy_py_ver == env.py_ver"
+        run: echo "triggered"
 
       - name: env.DEPLOY_PY_VER == env.py_ver 
         if: ${{ env.DEPLOY_PY_VER == env.py_ver }}
-        run: echo "triggered on env.deploy_py_ver == env.py_ver"
+        run: echo "triggered"
 
       - name: env.deploy_py_ver == env.PY_VER
         if: ${{ env.deploy_py_ver == env.PY_VER }}
-        run: echo "triggered on env.deploy_py_ver == env.py_ver"
+        run: echo "triggered"
+
 
       - name: env.DEPLOY_PY_VER == env.PY_VER
         if: ${{ env.DEPLOY_PY_VER == env.PY_VER }}
-        run: echo "triggered on env.deploy_py_ver == env.py_ver"
+        run: echo "triggered"
 
 
       - name: matrix env var trigger test 
         if: ${{ env.DEPLOY_PY_VER == matrix.PY_VER }}
-        run: echo "triggered on env.deploy_py_ver == matrix.py_ver"
+        run: echo "triggered"
+
 
       - name: matrix env var trigger test 
         if: ${{ env.DEPLOY_PY_VER == matrix.py_ver }}
-        run: echo "triggered on env.deploy_py_ver == matrix.py_ver"
-
+        run: echo "triggered"
 
       # - name: setup miniconda
       #   run: |
