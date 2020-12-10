@@ -14,35 +14,63 @@ jobs:
       - name: dump event payload
         run: cat $GITHUB_EVENT_PATH
 
-      - name: git config setup
+      - name: commit test 
         run: |
-          mkdir -p tmp/docs
-          cd tmp/docs
-          git init
-          git config -l
-          git config --local user.email "${{ github.event.head_commit.author.email }}"
-          git config --local user.name "${{ github.event.head_commit.author.name }}"
-          # git config --local user.name $GITHUB_ACTOR
-          git config -l
+          echo "actions git config local"
+          git config --local -l
+          echo "actions git config global"
+          git config --global -l
+
+          mkdir -p $HOME/tmp_docs
+          cd $HOME/tmp_docs
           echo "stub file" >> stub.txt
-          git add -A
-          git status
-          git commit -a -m 'test commit'
-          printenv | sort
+          ls -l
 
-
-      - name: checkout 
-        run: |
-          mkdir -p ${GITHUB_REPOSITORY}
-          cd ${GITHUB_REPOSITORY}
           git init
-          git config -l
-          git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
-          git checkout -b ${GITHUB_REF}
-          git fetch origin ${GITHUB_SHA}
-          git reset --hard FETCH_HEAD
-          git branch
-          git status
-          ls -R
+          # git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+          user_name=${PACKAGE_NAME}_docs_bot
+          git config --local user.email ${user_name}@inthe.cloud.org"
+          git config --local user.name "$user_name
+          git config --local -l
+          git checkout --orphan test_gh-pages
+          git add -A
+          git ls-files
+          git commit -a -m "spudtr CID workflow docs update"
+          git remote add origin https://{user_name}:${GITHUB_TOKEN}@github.com${GITHUB_REPOSITORY}
+          git push -u origin test_gh-pages --force
+
+  
+
+#       - name: git config setup
+#         run: |
+#           mkdir -p tmp/docs
+#           cd tmp/docs
+#           git init
+#           git config -l
+#           git config --local user.email "${{ github.event.head_commit.author.email }}"
+#           git config --local user.name "${{ github.event.head_commit.author.name }}"
+#           # git config --local user.name $GITHUB_ACTOR
+#           git config -l
+#           echo "stub file" >> stub.txt
+#           git add -A
+#           git status
+#           git commit -a -m 'test commit'
+#           printenv | sort
+
+# git remote add origin https://${user}:${GITHUB_TOKEN}@${git_repo}
+
+#       - name: checkout 
+#         run: |
+#           mkdir -p ${GITHUB_REPOSITORY}
+#           cd ${GITHUB_REPOSITORY}
+#           git init
+#           git config -l
+#           git remote add origin https://${${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+#           git checkout -b ${GITHUB_REF}
+#           git fetch origin ${GITHUB_SHA}
+#           git reset --hard FETCH_HEAD
+#           git branch
+#           git status
+#           ls -R
 
 
