@@ -11,31 +11,76 @@ jobs:
   checkout:
     runs-on: [ubuntu-latest]
     steps:
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - run: |
+          ls -lR
+          git config -l
+
       - name: dump event payload
         run: cat $GITHUB_EVENT_PATH
 
-      - name: git config setup
+      - name: init commit push test 
         run: |
-          mkdir -p tmp/docs
-          cd tmp/docs
-          git init
-          git config -l
-          git config --local user.email "${{ github.event.head_commit.author.email }}"
-          git config --local user.name "${{ github.event.head_commit.author.name }}"
-          # git config --local user.name $GITHUB_ACTOR
-          git config -l
+          # echo "actions git config global"
+          # git config -l
 
-      - name: dump event
-        run: |
-          mkdir -p ${GITHUB_REPOSITORY}
-          cd ${GITHUB_REPOSITORY}
+          mkdir -p $HOME/tmp_docs
+          cd $HOME/tmp_docs
+          echo "stub file" >> stub.txt
+          ls -l
+
           git init
-          git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
-          git checkout -b ${GITHUB_REF}
-          git fetch origin ${GITHUB_SHA}
-          git reset --hard FETCH_HEAD
-          git branch
-          git status
-          ls -R
+          # git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+          user_name=docs_bot_${GITHUB_EVENT_NAME}
+          git config --global user.email "${user_name}@inthe.cloud.org"
+          git config --global user.name "$user_name"
+          git config -l
+          git checkout --orphan test_gh-pages
+          git add -A
+          git ls-files
+          git commit -a -m "spudtr CID workflow docs update"
+          # this works w/ personal token and secret 
+          # git remote add origin "https://turbach:${GH_ACTION_PUSH}@github.com/turbach/ghactions_demo"
+          # git remote add origin "https://turbach:${GH_TOKEN}@github.com/turbach/ghactions_demo"
+          # git remote add origin "https://turbach:${{ secrets.github_token }}@github.com/turbach/ghactions_demo"
+          git remote add origin "https://${user_name}:${{ secrets.github_token }}@github.com/${GITHUB_REPOSITORY}"
+          git push -u origin test_gh-pages --force
+
+  
+
+#       - name: git config setup
+#         run: |
+#           mkdir -p tmp/docs
+#           cd tmp/docs
+#           git init
+#           git config -l
+#           git config --local user.email "${{ github.event.head_commit.author.email }}"
+#           git config --local user.name "${{ github.event.head_commit.author.name }}"
+#           # git config --local user.name $GITHUB_ACTOR
+#           git config -l
+#           echo "stub file" >> stub.txt
+#           git add -A
+#           git status
+#           git commit -a -m 'test commit'
+#           printenv | sort
+
+# git remote add origin https://${user}:${GITHUB_TOKEN}@${git_repo}
+
+#       - name: checkout 
+#         run: |
+#           mkdir -p ${GITHUB_REPOSITORY}
+#           cd ${GITHUB_REPOSITORY}
+#           git init
+#           git config -l
+#           git remote add origin https://${${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
+#           git checkout -b ${GITHUB_REF}
+#           git fetch origin ${GITHUB_SHA}
+#           git reset --hard FETCH_HEAD
+#           git branch
+#           git status
+#           ls -R
 
 
