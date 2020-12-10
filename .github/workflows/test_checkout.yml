@@ -24,8 +24,8 @@ jobs:
 
       - name: init commit push test 
         run: |
-          echo "actions git config global"
-          git config -l
+          # echo "actions git config global"
+          # git config -l
 
           mkdir -p $HOME/tmp_docs
           cd $HOME/tmp_docs
@@ -34,14 +34,14 @@ jobs:
 
           git init
           # git remote add origin ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}
-          user_name=${GITHUB_EVENT_NAME}_docs_bot
+          user_name=docs_bot_${GITHUB_EVENT_NAME}
           git config --global user.email ${user_name}@inthe.cloud.org"
           git config --global user.name "$user_name
           git config -l
           git checkout --orphan test_gh-pages
           git add -A
           git ls-files
-          # git commit -a -m "spudtr CID workflow docs update"
+          git commit -a -m "spudtr CID workflow docs update"
           # git remote add origin https://{user_name}:${GITHUB_TOKEN}@github.com${GITHUB_REPOSITORY}
           # echo "remote add origin https://${user_name}:{GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           #git push -u origin test_gh-pages --force
