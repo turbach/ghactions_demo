@@ -87,7 +87,7 @@ jobs:
     runs-on: [ubuntu-latest]
     strategy:
       matrix:
-        pyver: ['3.6', '3.7', '3.8']
+        pyver: [3.6, 3.7, 3.8]
     env:
       PY_VER: ${{ matrix.pyver }}
 
@@ -162,6 +162,8 @@ jobs:
           # ci_test: all else defaults to upload upload conda package to conda
           # channel cid_test and no python package upload
           echo "DEPLOY_KEY=${conda_label:-cid_test}" >> $GITHUB_ENV
+
+          echo "DEPLOY_KEY=${conda_label:main}" >> $GITHUB_ENV
 
       - name: log deploy variables
         run: echo $GITHUB_REF PY_VER=$PY_VER DEPLOY_KEY=$DEPLOY_KEY TARBALL=$TARBALL
