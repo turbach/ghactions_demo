@@ -38,7 +38,7 @@ jobs:
           git config --global user.email ${user_name}@inthe.cloud.org"
           git config --global user.name "$user_name
           git config -l
-          # git checkout --orphan test_gh-pages
+          git checkout --orphan test_gh-pages
           # git add -A
           # git ls-files
           # git commit -a -m "spudtr CID workflow docs update"
