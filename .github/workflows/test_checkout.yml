@@ -20,8 +20,6 @@ jobs:
 
       - name: commit test 
         run: |
-          echo "actions git config local"
-          git config --local -l
           echo "actions git config global"
           git config --global -l
 
