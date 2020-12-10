@@ -16,7 +16,8 @@ jobs:
         uses: actions/checkout@v2
 
       - run: |
-          ls -lR 
+          ls -lR
+          git config -l
 
       - name: dump event payload
         run: cat $GITHUB_EVENT_PATH
