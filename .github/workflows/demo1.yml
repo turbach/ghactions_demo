@@ -51,7 +51,7 @@ env:
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
   CONDA_BLD_PATH: $HOME/conda_bld_dir
-  DEPLOY_PY_VER: '3.8'
+  DEPLOY_PY_VER: "3.8"
 
 on:
   # any branch allows for testing, exclude tags to prevent double runs
@@ -94,15 +94,17 @@ jobs:
     steps:
       #- uses: actions/checkout@v2
 
-      - name: scalar trigger test 
-        if: ${{ env.deploy_py_ver == 3.8 }}
+      - name: single quote scalar trigger test 
+        if: ${{ env.deploy_py_ver == '3.8' }}
         run: echo "triggered on scalar single quote 3.8"
 
+      - name: double quote scalar trigger test 
+        if: ${{ env.deploy_py_ver == "3.8" }}
+        run: echo "triggered on scalar double quote 3.8"
 
       - name: env var trigger test 
         if: ${{ env.deploy_py_ver == matrix.py_ver }}
-        run: echo "triggered on env.deploy_py_ver"
-
+        run: echo "triggered on env.deploy_py_ver == matrix.py_ver"
 
       - name: setup miniconda
         run: |
