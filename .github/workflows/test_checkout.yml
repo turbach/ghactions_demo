@@ -3,9 +3,8 @@ env:
   PKG_NAME: ghactions_demo
 on: 
   push:
+    branches: [main, dev, cid_dev]
   pull_request:
-  # release:
-  #   types: [published]
 
 jobs:
   checkout:
