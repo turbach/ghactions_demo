@@ -25,7 +25,7 @@ jobs:
       - name: commit test 
         run: |
           echo "actions git config global"
-          git config --global -l
+          git config -l
 
           mkdir -p $HOME/tmp_docs
           cd $HOME/tmp_docs
