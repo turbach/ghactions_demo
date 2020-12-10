@@ -95,7 +95,7 @@ jobs:
       #- uses: actions/checkout@v2
 
       - name: single quote scalar trigger test 
-        if: ${{ env.deploy_py_ver == '3.8' }}
+        if: env.deploy_py_ver == '3.8'
         run: echo "triggered on scalar single quote 3.8"
 
       - name: job.env var trigger test 
