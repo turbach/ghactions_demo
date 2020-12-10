@@ -51,6 +51,7 @@ env:
   SPHINX_DOCS_PATH: $HOME/docs
   SPHIX_DOCS_HTML: $HOME/docs/build/html
   CONDA_BLD_PATH: $HOME/conda_bld_dir
+  DEPLOY_PY_VER: "3.8"
 
 on:
   # any branch allows for testing, exclude tags to prevent double runs
@@ -73,9 +74,9 @@ on:
     types: 
       - published
 
-  schedule:
-    # run every two minutes
-    - cron: '0 */1 * * *'
+  # schedule:
+    # run every 5 minutes
+  #  - cron: '0 */5 * * *'
 
     # run at 1 am 
     # - cron: '0 1 * * *'
@@ -92,6 +93,15 @@ jobs:
 
     steps:
       #- uses: actions/checkout@v2
+
+      - name: scalar trigger test 
+        if: ${{ env.deploy_py_ver == '3.8' }}
+        run: echo "triggered on scalar 3.8"
+
+      - name: env var trigger test 
+        if: ${{ env.deploy_py_ver == matrix.py_ver }}
+        run: echo "triggered on env.deploy_py_ver
+
 
       - name: setup miniconda
         run: |
