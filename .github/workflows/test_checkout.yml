@@ -42,7 +42,8 @@ jobs:
           git add -A
           git ls-files
           git commit -a -m "spudtr CID workflow docs update"
-          git remote add origin https://${user_name}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          # git remote add origin https://${user_name}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git remote add origin https://turbach:${GITHUB_TOKEN}@github.com/turbach/gh_actions_demo
           # echo "remote add origin https://${user_name}:{GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git push -u origin test_gh-pages --force
 
