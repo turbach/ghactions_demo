@@ -94,7 +94,7 @@ jobs:
     steps:
       #- uses: actions/checkout@v2
       - name: env dump
-        run echo ${{ env }}
+        run: echo ${{ env }}
 
       - name: single quote scalar trigger test 
         if: env.deploy_py_ver == '3.8'
