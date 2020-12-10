@@ -96,7 +96,8 @@ jobs:
 
       - name: scalar trigger test 
         if: ${{ env.deploy_py_ver == '3.8' }}
-        run: echo "triggered on scalar 3.8"
+        run: echo "triggered on scalar single quote 3.8"
+
 
       - name: env var trigger test 
         if: ${{ env.deploy_py_ver == matrix.py_ver }}
