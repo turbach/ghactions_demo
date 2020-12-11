@@ -20,9 +20,13 @@ jobs:
         py_ver: [3.6, 3.7]
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      DEMO: 'env_demo'
+    outputs:
+      tarball
     steps:
 
-      - name: checkout
+      - name: checkout python ${{ matrix.py_ver }} env: ${{ env.DEMO }}
         uses: actions/checkout@v2
 
       - run: |
