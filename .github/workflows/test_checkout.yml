@@ -24,7 +24,7 @@ jobs:
       DEMO: 'env_demo'
     steps:
 
-      - name: checkout python=${{ matrix.py_ver }} env ${{ env.DEMO }}
+      - name: conda build --python=${{ matrix.py_ver }} conda
         uses: actions/checkout@v2
 
       - run: |
