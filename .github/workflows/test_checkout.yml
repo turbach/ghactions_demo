@@ -26,7 +26,7 @@ jobs:
       tarball
     steps:
 
-      - name: checkout python ${{ matrix.py_ver }} env: ${{ env.DEMO }}
+      - name: checkout python ${{ matrix.py_ver }} env ${{ env.DEMO }}
         uses: actions/checkout@v2
 
       - run: |
