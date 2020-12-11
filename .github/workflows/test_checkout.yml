@@ -22,8 +22,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       DEMO: 'env_demo'
-    outputs:
-      tarball
     steps:
 
       - name: checkout python ${{ matrix.py_ver }} env ${{ env.DEMO }}
