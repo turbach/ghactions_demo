@@ -23,6 +23,11 @@ jobs:
     env:
       DEMO: 'env_demo'
     steps:
+      - run: |
+          ls -l 
+          printenv HOME
+          cd $HOME/fake_package_dir
+          ls -l
 
       - name: conda build --python=${{ matrix.py_ver }} conda env_${{ matrix.py_ver }}
         uses: actions/checkout@v2
