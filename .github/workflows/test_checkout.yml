@@ -23,14 +23,14 @@ jobs:
     env:
       DEMO: 'env_demo'
     steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
       - run: |
           ls -l 
-          printenv HOME
-          cd $HOME/fake_package_dir
+          printenv GITHUB_WORKSPACE
+          cd $GITHUB_WORKSPACE/fake_package_dir
           ls -l
-
-      - name: conda build --python=${{ matrix.py_ver }} conda env_${{ matrix.py_ver }}
-        uses: actions/checkout@v2
 
       - run: |
           ls -lR
